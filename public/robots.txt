@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /teacher
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /cards
+Disallow: /payment
+Disallow: /verify
