@@ -1,5 +1,8 @@
+import { Suspense, lazy } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import Header from './components/Header'
+import AdminRoute from './components/AdminRoute'
+import TeacherRoute from './components/TeacherRoute'
 import Home from './pages/Home'
 import Sessions from './pages/Sessions'
 import SessionDetail from './pages/SessionDetail'
@@ -13,23 +16,23 @@ import SetPassword from './pages/SetPassword'
 import Legal from './pages/Legal'
 import Faq from './pages/Faq'
 import Profile from './pages/Profile'
-import AdminRoute from './components/AdminRoute'
-import TeacherRoute from './components/TeacherRoute'
-import AdminSections from './pages/admin/AdminSections'
-import AdminTeachers from './pages/admin/AdminTeachers'
-import AdminSessions from './pages/admin/AdminSessions'
-import AdminSessionEdit from './pages/admin/AdminSessionEdit'
-import AdminDiscounts from './pages/admin/AdminDiscounts'
-import AdminPayments from './pages/admin/AdminPayments'
-import AdminRefunds from './pages/admin/AdminRefunds'
-import AdminModeration from './pages/admin/AdminModeration'
-import AdminStudents from './pages/admin/AdminStudents'
-import AdminStudentDetail from './pages/admin/AdminStudentDetail'
-import TeacherDashboard from './pages/teacher/TeacherDashboard'
-import TeacherSession from './pages/teacher/TeacherSession'
-import TeacherMarking from './pages/teacher/TeacherMarking'
-import TeacherChat from './pages/teacher/TeacherChat'
 import { SITE_NAME, SUPPORT_EMAIL } from './lib/site'
+
+// Admin and teacher pages load only when someone opens them
+const AdminSections = lazy(() => import('./pages/admin/AdminSections'))
+const AdminTeachers = lazy(() => import('./pages/admin/AdminTeachers'))
+const AdminSessions = lazy(() => import('./pages/admin/AdminSessions'))
+const AdminSessionEdit = lazy(() => import('./pages/admin/AdminSessionEdit'))
+const AdminDiscounts = lazy(() => import('./pages/admin/AdminDiscounts'))
+const AdminPayments = lazy(() => import('./pages/admin/AdminPayments'))
+const AdminRefunds = lazy(() => import('./pages/admin/AdminRefunds'))
+const AdminModeration = lazy(() => import('./pages/admin/AdminModeration'))
+const AdminStudents = lazy(() => import('./pages/admin/AdminStudents'))
+const AdminStudentDetail = lazy(() => import('./pages/admin/AdminStudentDetail'))
+const TeacherDashboard = lazy(() => import('./pages/teacher/TeacherDashboard'))
+const TeacherSession = lazy(() => import('./pages/teacher/TeacherSession'))
+const TeacherMarking = lazy(() => import('./pages/teacher/TeacherMarking'))
+const TeacherChat = lazy(() => import('./pages/teacher/TeacherChat'))
 
 function Footer() {
   return (
@@ -62,44 +65,50 @@ function Footer() {
   )
 }
 
+function PageLoading() {
+  return <p className="container-page py-16 text-brand-muted">Loading</p>
+}
+
 export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/sessions" element={<Sessions />} />
-          <Route path="/sessions/:id" element={<SessionDetail />} />
-          <Route path="/sessions/:id/room" element={<SessionRoom />} />
-          <Route path="/payment/callback" element={<PaymentCallback />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/set-password" element={<SetPassword />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/cards/:cardId" element={<AccessCard />} />
-          <Route path="/verify/:cardId" element={<Verify />} />
-          <Route path="/faq" element={<Faq />} />
-          <Route path="/terms" element={<Legal doc="terms" />} />
-          <Route path="/privacy" element={<Legal doc="privacy" />} />
-          <Route path="/refunds" element={<Legal doc="refunds" />} />
+        <Suspense fallback={<PageLoading />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/sessions" element={<Sessions />} />
+            <Route path="/sessions/:id" element={<SessionDetail />} />
+            <Route path="/sessions/:id/room" element={<SessionRoom />} />
+            <Route path="/payment/callback" element={<PaymentCallback />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/set-password" element={<SetPassword />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/cards/:cardId" element={<AccessCard />} />
+            <Route path="/verify/:cardId" element={<Verify />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/terms" element={<Legal doc="terms" />} />
+            <Route path="/privacy" element={<Legal doc="privacy" />} />
+            <Route path="/refunds" element={<Legal doc="refunds" />} />
 
-          <Route path="/teacher" element={<TeacherRoute><TeacherDashboard /></TeacherRoute>} />
-          <Route path="/teacher/sessions/:id" element={<TeacherRoute><TeacherSession /></TeacherRoute>} />
-          <Route path="/teacher/sessions/:id/marking" element={<TeacherRoute><TeacherMarking /></TeacherRoute>} />
-          <Route path="/teacher/sessions/:id/chat" element={<TeacherRoute><TeacherChat /></TeacherRoute>} />
+            <Route path="/teacher" element={<TeacherRoute><TeacherDashboard /></TeacherRoute>} />
+            <Route path="/teacher/sessions/:id" element={<TeacherRoute><TeacherSession /></TeacherRoute>} />
+            <Route path="/teacher/sessions/:id/marking" element={<TeacherRoute><TeacherMarking /></TeacherRoute>} />
+            <Route path="/teacher/sessions/:id/chat" element={<TeacherRoute><TeacherChat /></TeacherRoute>} />
 
-          <Route path="/admin/sections" element={<AdminRoute><AdminSections /></AdminRoute>} />
-          <Route path="/admin/teachers" element={<AdminRoute><AdminTeachers /></AdminRoute>} />
-          <Route path="/admin/sessions" element={<AdminRoute><AdminSessions /></AdminRoute>} />
-          <Route path="/admin/sessions/:id" element={<AdminRoute><AdminSessionEdit /></AdminRoute>} />
-          <Route path="/admin/discounts" element={<AdminRoute><AdminDiscounts /></AdminRoute>} />
-          <Route path="/admin/payments" element={<AdminRoute><AdminPayments /></AdminRoute>} />
-          <Route path="/admin/refunds" element={<AdminRoute><AdminRefunds /></AdminRoute>} />
-          <Route path="/admin/moderation" element={<AdminRoute><AdminModeration /></AdminRoute>} />
-          <Route path="/admin/students" element={<AdminRoute><AdminStudents /></AdminRoute>} />
-          <Route path="/admin/students/:id" element={<AdminRoute><AdminStudentDetail /></AdminRoute>} />
-        </Routes>
+            <Route path="/admin/sections" element={<AdminRoute><AdminSections /></AdminRoute>} />
+            <Route path="/admin/teachers" element={<AdminRoute><AdminTeachers /></AdminRoute>} />
+            <Route path="/admin/sessions" element={<AdminRoute><AdminSessions /></AdminRoute>} />
+            <Route path="/admin/sessions/:id" element={<AdminRoute><AdminSessionEdit /></AdminRoute>} />
+            <Route path="/admin/discounts" element={<AdminRoute><AdminDiscounts /></AdminRoute>} />
+            <Route path="/admin/payments" element={<AdminRoute><AdminPayments /></AdminRoute>} />
+            <Route path="/admin/refunds" element={<AdminRoute><AdminRefunds /></AdminRoute>} />
+            <Route path="/admin/moderation" element={<AdminRoute><AdminModeration /></AdminRoute>} />
+            <Route path="/admin/students" element={<AdminRoute><AdminStudents /></AdminRoute>} />
+            <Route path="/admin/students/:id" element={<AdminRoute><AdminStudentDetail /></AdminRoute>} />
+          </Routes>
+        </Suspense>
       </main>
       <Footer />
     </div>
