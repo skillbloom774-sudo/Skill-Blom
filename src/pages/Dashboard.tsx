@@ -11,6 +11,7 @@ import { supabase } from '../lib/supabase'
 import { formatSessionTime } from '../lib/sessions'
 import RefundRequestButton from '../components/RefundRequestButton'
 import OnboardingChecklist from '../components/OnboardingChecklist'
+import AddToCalendarButton from '../components/AddToCalendarButton'
 
 type Tagged = { p: Purchase; s: PurchaseState }
 
@@ -80,6 +81,18 @@ function PurchaseRow({ purchase, state }: { purchase: Purchase; state: PurchaseS
           <Link to={`/sessions/${session.id}/room`} className="btn-primary px-4 py-2 text-sm">
             Session room
           </Link>
+        )}
+        {state !== 'expired' && (
+          <AddToCalendarButton
+            session={{
+              id: session.id,
+              title: session.title,
+              starts_at: session.starts_at,
+              ends_at: session.ends_at,
+              teacherName: session.guest_teachers?.name ?? null,
+              sectionName: session.sections?.name ?? null,
+            }}
+          />
         )}
         <Link to={`/cards/${purchase.card_id}`} className="btn-ghost px-4 py-2 text-sm">
           Access card
