@@ -12,6 +12,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import AccessCard from './pages/AccessCard'
 import Verify from './pages/Verify'
+import Certificate from './pages/Certificate'
 import SetPassword from './pages/SetPassword'
 import Legal from './pages/Legal'
 import Faq from './pages/Faq'
@@ -87,6 +88,7 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/cards/:cardId" element={<AccessCard />} />
             <Route path="/verify/:cardId" element={<Verify />} />
+            <Route path="/certificates/:number" element={<Certificate />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/terms" element={<Legal doc="terms" />} />
             <Route path="/privacy" element={<Legal doc="privacy" />} />

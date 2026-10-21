@@ -6,6 +6,7 @@ import { formatSessionTime } from '../lib/sessions'
 import StudentMaterial, { type MaterialItem } from '../components/StudentMaterial'
 import Attachments from '../components/Attachments'
 import ChatSection from '../components/ChatSection'
+import CertificatePanel from '../components/CertificatePanel'
 import PageHeader from '../components/PageHeader'
 
 type Room = {
@@ -286,6 +287,8 @@ export default function SessionRoom() {
           <p className="text-brand-text">The teacher hasn't added the meeting link yet. Check back shortly.</p>
         )}
       </div>
+
+      {!isAdmin && <CertificatePanel sessionId={id!} />}
 
       {!isAdmin && <ChatSection sessionId={id!} />}
 
