@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import CancelSessionPanel from '../../components/CancelSessionPanel'
+import SessionStudentsPanel from '../../components/SessionStudentsPanel'
 
 type Option = { id: string; name: string }
 
@@ -321,6 +322,8 @@ export default function AdminSessionEdit() {
           </button>
         </div>
       </form>
+
+      <SessionStudentsPanel sessionId={id!} />
 
       <CancelSessionPanel sessionId={id!} />
     </section>
