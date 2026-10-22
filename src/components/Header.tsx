@@ -8,8 +8,8 @@ export default function Header() {
 
   const isAdmin = role === 'admin'
   const isGuestTeacher = role === 'guest_teacher'
-  // Admins manage sessions and guest teachers buy nothing, so neither sees the public session list
-  const showSessions = !isAdmin && !isGuestTeacher
+  // Guest teachers are assigned to sessions, so they don't browse. Everyone else does.
+  const showSessions = !isGuestTeacher
   const showTeaching = isGuestTeacher
   const name = (user?.user_metadata?.full_name as string | undefined) ?? user?.email ?? ''
   const initial = name.trim().charAt(0).toUpperCase() || '?'

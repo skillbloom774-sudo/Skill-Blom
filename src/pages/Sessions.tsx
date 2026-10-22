@@ -8,6 +8,7 @@ import {
   searchSessions,
   type SearchResult,
 } from '../lib/sessionSearch'
+import AdminSessionBrowse from './AdminSessionBrowse'
 
 type Section = { slug: string; name: string }
 
@@ -74,6 +75,9 @@ export default function Sessions() {
 
   // Teachers are assigned to sessions, so they never browse them
   if (role === 'guest_teacher') return <Navigate to="/teacher" replace />
+
+  // Admins see the sessions they created, including drafts
+  if (role === 'admin') return <AdminSessionBrowse />
 
   const loading = result?.key !== key
   const rows = result?.rows ?? []
