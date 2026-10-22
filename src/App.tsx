@@ -17,6 +17,8 @@ import SetPassword from './pages/SetPassword'
 import Legal from './pages/Legal'
 import Faq from './pages/Faq'
 import Profile from './pages/Profile'
+import Teachers from './pages/Teachers'
+import TeacherProfile from './pages/TeacherProfile'
 import { SITE_NAME, SUPPORT_EMAIL } from './lib/site'
 
 // Admin and teacher pages load only when someone opens them
@@ -48,6 +50,7 @@ function Footer() {
         </div>
         <div className="flex flex-col gap-3 text-sm">
           <Link to="/sessions" className="text-brand-muted hover:text-brand-text">Sessions</Link>
+          <Link to="/teachers" className="text-brand-muted hover:text-brand-text">Teachers</Link>
           <Link to="/login" className="text-brand-muted hover:text-brand-text">Sign in</Link>
           <Link to="/faq" className="text-brand-muted hover:text-brand-text">FAQ</Link>
         </div>
@@ -90,6 +93,8 @@ export default function App() {
             <Route path="/cards/:cardId" element={<AccessCard />} />
             <Route path="/verify/:cardId" element={<Verify />} />
             <Route path="/certificates/:number" element={<Certificate />} />
+            <Route path="/teachers" element={<Teachers />} />
+            <Route path="/teachers/:id" element={<TeacherProfile />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/terms" element={<Legal doc="terms" />} />
             <Route path="/privacy" element={<Legal doc="privacy" />} />

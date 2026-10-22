@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import BuyButton from '../components/BuyButton'
 import ShareButton from '../components/ShareButton'
 import { useAuth } from '../lib/useAuth'
+import { supabase } from '../lib/supabase'
 import {
   fetchSession,
   formatNaira,
@@ -68,6 +69,7 @@ export default function SessionDetail() {
   const { id } = useParams()
   const { role, loading: authLoading } = useAuth()
   const [session, setSession] = useState<SessionListItem | null>(null)
+  const [teacherId, setTeacherId] = useState<string | null>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'missing'>('loading')
 
   useEffect(() => {
@@ -82,6 +84,15 @@ export default function SessionDetail() {
       })
       .catch(() => {
         if (!cancelled) setStatus('missing')
+      })
+
+    supabase
+      .from('sessions')
+      .select('guest_teacher_id')
+      .eq('id', id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setTeacherId(data?.guest_teacher_id ?? null)
       })
 
     return () => {
@@ -164,9 +175,26 @@ export default function SessionDetail() {
                   </span>
                 )}
                 <div className="min-w-0">
-                  <p className="text-lg font-medium text-brand-text">{teacher.name}</p>
+                  {teacherId ? (
+                    <Link
+                      to={`/teachers/${teacherId}`}
+                      className="text-lg font-medium text-brand-text transition hover:text-brand-primary"
+                    >
+                      {teacher.name}
+                    </Link>
+                  ) : (
+                    <p className="text-lg font-medium text-brand-text">{teacher.name}</p>
+                  )}
                   {teacher.bio && (
                     <p className="mt-2 max-w-prose text-sm leading-relaxed text-brand-muted">{teacher.bio}</p>
+                  )}
+                  {teacherId && (
+                    <Link
+                      to={`/teachers/${teacherId}`}
+                      className="mt-3 inline-block text-sm font-medium text-brand-primary hover:underline"
+                    >
+                      View their profile and other sessions →
+                    </Link>
                   )}
                 </div>
               </div>
