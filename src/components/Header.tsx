@@ -74,6 +74,7 @@ export default function Header() {
                     <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-muted">
                       Admin
                     </p>
+                    <Link to="/admin/analytics" className={menuItem}>Analytics</Link>
                     <Link to="/admin/sessions" className={menuItem}>Manage sessions</Link>
                     <Link to="/admin/students" className={menuItem}>Students</Link>
                     <Link to="/admin/discounts" className={menuItem}>Discount codes</Link>

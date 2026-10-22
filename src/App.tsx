@@ -3,6 +3,7 @@ import { Link, Route, Routes } from 'react-router-dom'
 import Header from './components/Header'
 import AdminRoute from './components/AdminRoute'
 import TeacherRoute from './components/TeacherRoute'
+import SessionViewTracker from './components/SessionViewTracker'
 import Home from './pages/Home'
 import Sessions from './pages/Sessions'
 import SessionDetail from './pages/SessionDetail'
@@ -23,6 +24,7 @@ import { SITE_NAME, SUPPORT_EMAIL } from './lib/site'
 
 // Admin, teacher, and export pages load only when someone opens them
 const SessionExports = lazy(() => import('./pages/SessionExports'))
+const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'))
 const AdminExports = lazy(() => import('./pages/admin/AdminExports'))
 const AdminSections = lazy(() => import('./pages/admin/AdminSections'))
 const AdminTeachers = lazy(() => import('./pages/admin/AdminTeachers'))
@@ -85,7 +87,15 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/sessions" element={<Sessions />} />
-            <Route path="/sessions/:id" element={<SessionDetail />} />
+            <Route
+              path="/sessions/:id"
+              element={
+                <>
+                  <SessionDetail />
+                  <SessionViewTracker />
+                </>
+              }
+            />
             <Route path="/sessions/:id/room" element={<SessionRoom />} />
             <Route path="/payment/callback" element={<PaymentCallback />} />
             <Route path="/login" element={<Login />} />
@@ -109,6 +119,7 @@ export default function App() {
             <Route path="/teacher/sessions/:id/attendance" element={<TeacherRoute><TeacherAttendance /></TeacherRoute>} />
             <Route path="/teacher/sessions/:id/exports" element={<TeacherRoute><SessionExports /></TeacherRoute>} />
 
+            <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
             <Route path="/admin/sections" element={<AdminRoute><AdminSections /></AdminRoute>} />
             <Route path="/admin/teachers" element={<AdminRoute><AdminTeachers /></AdminRoute>} />
             <Route path="/admin/sessions" element={<AdminRoute><AdminSessions /></AdminRoute>} />
