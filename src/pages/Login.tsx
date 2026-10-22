@@ -17,14 +17,17 @@ const MAX_FAILED_SIGNINS = 5
 const LOCKOUT_SECONDS = 60
 const CAPTCHA_ENABLED = Boolean(import.meta.env.VITE_TURNSTILE_SITE_KEY)
 
+const ALREADY_REGISTERED =
+  'This email is already registered and cannot be used to create a new account. Sign in instead, or use Forgot password if you can\'t remember your password.'
+
 function friendlyError(message: string) {
   const lower = message.toLowerCase()
 
   if (message === 'Invalid login credentials') {
     return "That email and password don't match. Check for typos, or use Forgot password to set a new one."
   }
-  if (lower.includes('already registered')) {
-    return 'An account with this email already exists. Sign in instead.'
+  if (lower.includes('already registered') || lower.includes('already been registered')) {
+    return ALREADY_REGISTERED
   }
   if (lower.includes('password should be at least')) {
     return 'Your password needs at least 6 characters.'
@@ -178,6 +181,13 @@ export default function Login() {
 
     if (error) {
       setError(friendlyError(error.message))
+      return
+    }
+
+    // Supabase returns a user with no identities when the email already has an account.
+    // No new account or email is created in that case, so tell the person clearly.
+    if (data.user && (data.user.identities?.length ?? 0) === 0) {
+      setError(ALREADY_REGISTERED)
       return
     }
 
