@@ -21,7 +21,9 @@ import Teachers from './pages/Teachers'
 import TeacherProfile from './pages/TeacherProfile'
 import { SITE_NAME, SUPPORT_EMAIL } from './lib/site'
 
-// Admin and teacher pages load only when someone opens them
+// Admin, teacher, and export pages load only when someone opens them
+const SessionExports = lazy(() => import('./pages/SessionExports'))
+const AdminExports = lazy(() => import('./pages/admin/AdminExports'))
 const AdminSections = lazy(() => import('./pages/admin/AdminSections'))
 const AdminTeachers = lazy(() => import('./pages/admin/AdminTeachers'))
 const AdminSessions = lazy(() => import('./pages/admin/AdminSessions'))
@@ -105,6 +107,7 @@ export default function App() {
             <Route path="/teacher/sessions/:id/marking" element={<TeacherRoute><TeacherMarking /></TeacherRoute>} />
             <Route path="/teacher/sessions/:id/chat" element={<TeacherRoute><TeacherChat /></TeacherRoute>} />
             <Route path="/teacher/sessions/:id/attendance" element={<TeacherRoute><TeacherAttendance /></TeacherRoute>} />
+            <Route path="/teacher/sessions/:id/exports" element={<TeacherRoute><SessionExports /></TeacherRoute>} />
 
             <Route path="/admin/sections" element={<AdminRoute><AdminSections /></AdminRoute>} />
             <Route path="/admin/teachers" element={<AdminRoute><AdminTeachers /></AdminRoute>} />
@@ -113,6 +116,7 @@ export default function App() {
             <Route path="/admin/discounts" element={<AdminRoute><AdminDiscounts /></AdminRoute>} />
             <Route path="/admin/payments" element={<AdminRoute><AdminPayments /></AdminRoute>} />
             <Route path="/admin/refunds" element={<AdminRoute><AdminRefunds /></AdminRoute>} />
+            <Route path="/admin/exports" element={<AdminRoute><AdminExports /></AdminRoute>} />
             <Route path="/admin/moderation" element={<AdminRoute><AdminModeration /></AdminRoute>} />
             <Route path="/admin/students" element={<AdminRoute><AdminStudents /></AdminRoute>} />
             <Route path="/admin/students/:id" element={<AdminRoute><AdminStudentDetail /></AdminRoute>} />

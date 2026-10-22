@@ -79,6 +79,9 @@ export default function TeacherDashboard() {
                 <Link to={`/teacher/sessions/${s.id}/attendance`} className="btn-ghost px-4 py-2 text-sm">
                   Attendance
                 </Link>
+                <Link to={`/teacher/sessions/${s.id}/exports`} className="btn-ghost px-4 py-2 text-sm">
+                  Exports
+                </Link>
                 <Link to={`/teacher/sessions/${s.id}/chat`} className="btn-ghost px-4 py-2 text-sm">
                   Chat
                 </Link>
