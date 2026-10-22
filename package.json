@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sentry/react": "^11.8.0",
     "@supabase/supabase-js": "^2.117.3",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.8",
