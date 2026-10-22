@@ -1,16 +1,13 @@
 import { supabase } from './supabase'
 
 async function send(message: string, stack: string, source: string) {
-  try {
-    await supabase.rpc('log_client_error', {
-      p_message: message.slice(0, 500),
-      p_stack: stack.slice(0, 2000),
-      p_path: window.location.pathname,
-      p_source: source,
-    })
-  } catch {
-    // Error reporting must never break the page
-  }
+  const { error } = await supabase.rpc('log_client_error', {
+    p_message: message.slice(0, 500),
+    p_stack: stack.slice(0, 2000),
+    p_path: window.location.pathname,
+    p_source: source,
+  })
+  if (error) console.error('Error logging failed:', error)
 }
 
 export function reportError(error: unknown, source: string, extra?: string) {

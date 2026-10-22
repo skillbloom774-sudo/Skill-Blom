@@ -7,6 +7,7 @@ import { installErrorHandlers } from './lib/errorLog'
 import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
 
+// Must run before the app renders, so errors thrown anywhere are captured
 installErrorHandlers()
 
 createRoot(document.getElementById('root')!).render(
