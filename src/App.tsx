@@ -34,6 +34,7 @@ const TeacherDashboard = lazy(() => import('./pages/teacher/TeacherDashboard'))
 const TeacherSession = lazy(() => import('./pages/teacher/TeacherSession'))
 const TeacherMarking = lazy(() => import('./pages/teacher/TeacherMarking'))
 const TeacherChat = lazy(() => import('./pages/teacher/TeacherChat'))
+const TeacherAttendance = lazy(() => import('./pages/teacher/TeacherAttendance'))
 
 function Footer() {
   return (
@@ -98,6 +99,7 @@ export default function App() {
             <Route path="/teacher/sessions/:id" element={<TeacherRoute><TeacherSession /></TeacherRoute>} />
             <Route path="/teacher/sessions/:id/marking" element={<TeacherRoute><TeacherMarking /></TeacherRoute>} />
             <Route path="/teacher/sessions/:id/chat" element={<TeacherRoute><TeacherChat /></TeacherRoute>} />
+            <Route path="/teacher/sessions/:id/attendance" element={<TeacherRoute><TeacherAttendance /></TeacherRoute>} />
 
             <Route path="/admin/sections" element={<AdminRoute><AdminSections /></AdminRoute>} />
             <Route path="/admin/teachers" element={<AdminRoute><AdminTeachers /></AdminRoute>} />

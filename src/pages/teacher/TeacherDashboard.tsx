@@ -37,6 +37,7 @@ export default function TeacherDashboard() {
           .from('sessions')
           .select('id, title, starts_at, status, sections(name)')
           .eq('guest_teacher_id', teacher.id)
+          .neq('status', 'cancelled')
           .order('starts_at')
         if (!ignore) setSessions((data as unknown as Row[]) ?? [])
       })
@@ -67,14 +68,20 @@ export default function TeacherDashboard() {
               key={s.id}
               className="card flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
             >
-              <div>
+              <div className="min-w-0">
                 <p className="eyebrow">{s.sections?.name}</p>
                 <p className="mt-2 text-lg font-medium text-brand-text">{s.title}</p>
                 <p className="mt-1 text-sm text-brand-muted">
                   {when.day}, {when.time} · {s.status}
                 </p>
               </div>
-              <div className="flex shrink-0 gap-3">
+              <div className="flex shrink-0 flex-wrap gap-3">
+                <Link to={`/teacher/sessions/${s.id}/attendance`} className="btn-ghost px-4 py-2 text-sm">
+                  Attendance
+                </Link>
+                <Link to={`/teacher/sessions/${s.id}/chat`} className="btn-ghost px-4 py-2 text-sm">
+                  Chat
+                </Link>
                 <Link to={`/teacher/sessions/${s.id}/marking`} className="btn-ghost px-4 py-2 text-sm">
                   Marking
                 </Link>
