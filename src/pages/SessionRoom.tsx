@@ -7,6 +7,7 @@ import StudentMaterial, { type MaterialItem } from '../components/StudentMateria
 import Attachments from '../components/Attachments'
 import ChatSection from '../components/ChatSection'
 import CertificatePanel from '../components/CertificatePanel'
+import StudentRecordings from '../components/StudentRecordings'
 import PageHeader from '../components/PageHeader'
 
 type Room = {
@@ -291,6 +292,8 @@ export default function SessionRoom() {
       {!isAdmin && <CertificatePanel sessionId={id!} />}
 
       {!isAdmin && <ChatSection sessionId={id!} />}
+
+      {!isAdmin && <StudentRecordings sessionId={id!} />}
 
       <div className="mt-16">
         <h2 className="text-2xl">Materials</h2>

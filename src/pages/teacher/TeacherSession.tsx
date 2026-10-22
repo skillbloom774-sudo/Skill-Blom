@@ -5,6 +5,7 @@ import { useAuth } from '../../lib/useAuth'
 import { formatSessionTime } from '../../lib/sessions'
 import { uploadFiles } from '../../lib/files'
 import Attachments from '../../components/Attachments'
+import RecordingsManager from '../../components/RecordingsManager'
 
 type Session = {
   id: string
@@ -372,6 +373,8 @@ export default function TeacherSession() {
           <button type="submit" className="btn-primary">Save meeting</button>
         </div>
       </form>
+
+      <RecordingsManager sessionId={session.id} />
 
       {/* Existing materials */}
       <div className="mt-16">
