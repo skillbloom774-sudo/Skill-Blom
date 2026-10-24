@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { QRCodeSVG } from 'qrcode.react'
 import { supabase } from '../lib/supabase'
+import { SITE_NAME } from '../lib/site'
 
 type Cert = {
   valid: boolean
@@ -70,7 +72,7 @@ export default function Certificate() {
     : ''
 
   return (
-    <section className="container-page py-12 sm:py-16">
+    <section className="container-page py-12 sm:py-16 print:py-0">
       <div className="mx-auto max-w-3xl">
         <div className="flex flex-wrap items-center justify-between gap-4 print:hidden">
           <Link to="/dashboard" className="text-sm text-brand-muted transition hover:text-brand-primary">
@@ -86,15 +88,31 @@ export default function Certificate() {
           </div>
         </div>
 
-        <div className="mt-8 border-[10px] border-double border-brand-primary/80 bg-white p-10 text-center sm:p-16 print:mt-0">
-          <img src="/logo.svg" alt="" className="mx-auto h-14 w-14" />
-          <p className="eyebrow mt-6">Certificate of completion</p>
+        <article className="certificate mt-8 border-[10px] border-double border-brand-primary/80 bg-white p-10 text-center sm:p-14 print:mt-0 print:border-[8px] print:p-10">
+          <div className="flex items-center justify-between gap-4 text-left">
+            <div className="flex items-center gap-3">
+              <img src="/logo.svg" alt="" className="h-12 w-12" />
+              <span className="font-serif text-xl text-brand-primary">{SITE_NAME}</span>
+            </div>
+            <div className="shrink-0 rounded-xl border border-brand-border p-2">
+              <QRCodeSVG
+                value={`${window.location.origin}/certificates/${cert.certificate_number}`}
+                size={96}
+                fgColor="#1B2A4A"
+                level="M"
+              />
+              <p className="mt-1 text-center text-[10px] text-brand-muted">Scan to verify</p>
+            </div>
+          </div>
+
+          <p className="eyebrow mt-10">Certificate of completion</p>
           <p className="mt-8 text-brand-muted">This certifies that</p>
           <h1 className="mt-3 text-4xl sm:text-5xl">{cert.student_name}</h1>
           <p className="mt-8 text-brand-muted">has completed</p>
           <p className="mt-3 font-serif text-2xl text-brand-text sm:text-3xl">{cert.session_title}</p>
           <p className="mt-3 text-sm text-brand-muted">
-            {cert.section ? `${cert.section} · ` : ''}
+            {cert.section ? `${cert.section}` : ''}
+            {cert.section && cert.teacher ? ' · ' : ''}
             {cert.teacher ? `taught by ${cert.teacher}` : ''}
           </p>
 
@@ -112,10 +130,10 @@ export default function Certificate() {
               <p className="mt-2 font-mono tracking-widest text-brand-text">{cert.certificate_number}</p>
             </div>
           </div>
-        </div>
+        </article>
 
         <p className="mt-6 text-center text-xs text-brand-muted print:hidden">
-          Anyone with this link can check that the certificate is genuine.
+          Scan the code or use the link to check this certificate is genuine.
         </p>
       </div>
     </section>

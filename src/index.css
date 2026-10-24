@@ -74,3 +74,23 @@
     @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-brand-border bg-brand-surface px-5 py-3 text-[15px] font-medium text-brand-text transition hover:border-brand-primary hover:text-brand-primary;
   }
 }
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  header,
+  footer {
+    display: none !important;
+  }
+
+  .certificate {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
