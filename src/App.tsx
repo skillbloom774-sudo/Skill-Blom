@@ -20,6 +20,7 @@ import Faq from './pages/Faq'
 import Profile from './pages/Profile'
 import Teachers from './pages/Teachers'
 import TeacherProfile from './pages/TeacherProfile'
+import CalendarSettings from './pages/CalendarSettings'
 import { SITE_NAME, SUPPORT_EMAIL } from './lib/site'
 
 // Admin, teacher, and export pages load only when someone opens them
@@ -102,6 +103,7 @@ export default function App() {
             <Route path="/set-password" element={<SetPassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/calendar" element={<CalendarSettings />} />
             <Route path="/cards/:cardId" element={<AccessCard />} />
             <Route path="/verify/:cardId" element={<Verify />} />
             <Route path="/certificates/:number" element={<Certificate />} />

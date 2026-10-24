@@ -8,8 +8,8 @@ export default function Header() {
 
   const isAdmin = role === 'admin'
   const isGuestTeacher = role === 'guest_teacher'
-  // Guest teachers are assigned to sessions, so they don't browse. Everyone else does.
-  const showSessions = !isGuestTeacher
+  // Admins manage sessions and guest teachers buy nothing, so neither sees the public session list
+  const showSessions = !isAdmin && !isGuestTeacher
   const showTeaching = isGuestTeacher
   const name = (user?.user_metadata?.full_name as string | undefined) ?? user?.email ?? ''
   const initial = name.trim().charAt(0).toUpperCase() || '?'
@@ -66,6 +66,7 @@ export default function Header() {
                   )}
                   <Link to="/dashboard" className={menuItem}>My learning</Link>
                   {showTeaching && <Link to="/teacher" className={menuItem}>Teaching</Link>}
+                  <Link to="/calendar" className={menuItem}>Calendar feed</Link>
                   <Link to="/profile" className={menuItem}>Your details</Link>
                 </div>
 
