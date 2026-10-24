@@ -4,7 +4,7 @@ export type Column = { key: string; label: string }
 // A leading apostrophe stops that. Phone numbers such as +234 are left alone.
 const FORMULA_START = /^([=@\t\r]|[+-](?!\d))/
 
-function cell(value: unknown): string {
+export function cell(value: unknown): string {
   if (value === null || value === undefined) return ''
   let text = String(value)
   if (FORMULA_START.test(text)) text = `'${text}`
