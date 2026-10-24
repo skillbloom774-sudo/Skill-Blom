@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { formatNaira } from '../../lib/sessions'
 import PageHeader from '../../components/PageHeader'
+import { BarChart, LineChart, Legend, compactNaira } from '../../components/AnalyticsCharts'
 
 type SectionRow = { name: string; paid_count: number; revenue_kobo: number }
 type TopSession = { id: string; title: string; section_name: string; paid_count: number; views: number }
@@ -15,6 +16,11 @@ type Summary = {
   by_section: SectionRow[]
   top_sessions: TopSession[]
   monthly: MonthRow[]
+}
+
+type Trends = {
+  daily: { day: string; views: number; paid: number }[]
+  monthly: { month: string; views: number; paid: number; revenue_kobo: number }[]
 }
 
 type RangeKey = '30' | '90' | 'all' | 'custom'
@@ -47,6 +53,22 @@ function percent(part: number, whole: number) {
   return ((part / whole) * 100).toFixed(1)
 }
 
+function monthLabel(m: string) {
+  return new Date(`${m}-01T00:00:00+01:00`).toLocaleDateString('en-NG', {
+    month: 'short',
+    year: '2-digit',
+    timeZone: 'Africa/Lagos',
+  })
+}
+
+function dayLabel(d: string) {
+  return new Date(`${d}T00:00:00+01:00`).toLocaleDateString('en-NG', {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'Africa/Lagos',
+  })
+}
+
 function chipClass(active: boolean) {
   return `rounded-full px-4 py-2 text-sm transition ${
     active
@@ -71,11 +93,26 @@ export default function AdminAnalytics() {
   const [customTo, setCustomTo] = useState('')
   const [result, setResult] = useState<{ key: string; summary: Summary } | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [trends, setTrends] = useState<Trends | null>(null)
 
   const from =
     rangeKey === '30' ? daysAgo(29) : rangeKey === '90' ? daysAgo(89) : rangeKey === 'custom' ? customFrom : ''
   const to = rangeKey === 'all' ? '' : rangeKey === 'custom' ? customTo : lagosDate(new Date())
   const key = `${rangeKey}|${from}|${to}`
+
+  // Charts use fixed periods (12 months and 30 days), so they load once
+  useEffect(() => {
+    let ignore = false
+
+    supabase.rpc('analytics_trends').then(({ data, error }) => {
+      if (ignore) return
+      if (!error && data) setTrends(data as Trends)
+    })
+
+    return () => {
+      ignore = true
+    }
+  }, [])
 
   useEffect(() => {
     let ignore = false
@@ -103,8 +140,8 @@ export default function AdminAnalytics() {
   const loading = result?.key !== key
   const summary = result?.summary ?? null
   const conversion = summary ? percent(summary.paid_count, summary.views) : null
-  const maxRevenue = summary ? Math.max(1, ...summary.monthly.map((m) => m.revenue_kobo)) : 1
   const maxSectionRevenue = summary ? Math.max(1, ...summary.by_section.map((s) => s.revenue_kobo)) : 1
+  const maxRevenue = summary ? Math.max(1, ...summary.monthly.map((m) => m.revenue_kobo)) : 1
 
   return (
     <section className="container-page py-14 sm:py-20">
@@ -150,7 +187,82 @@ export default function AdminAnalytics() {
               hint="Paid students divided by page views. An estimate, since views are counted per day."
             />
           </div>
+        </div>
+      )}
 
+      {trends && (
+        <div className="mt-14 grid gap-8">
+          <div className="card">
+            <p className="eyebrow">Revenue</p>
+            <h2 className="mt-2 text-xl">Last 12 months</h2>
+            <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+              Paid purchases by month. Refunds are not counted.
+            </p>
+            <div className="mt-6">
+              <BarChart
+                label="Revenue by month"
+                labels={trends.monthly.map((m) => monthLabel(m.month))}
+                values={trends.monthly.map((m) => m.revenue_kobo)}
+                axisFormat={compactNaira}
+                tipFormat={formatNaira}
+                color="#1B2A4A"
+              />
+            </div>
+          </div>
+
+          <div className="card">
+            <p className="eyebrow">Conversion</p>
+            <h2 className="mt-2 text-xl">Visitors who bought, by month</h2>
+            <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+              Paid students divided by session page views. Months with no views are left out of the line.
+            </p>
+            <div className="mt-6">
+              <LineChart
+                label="Conversion by month"
+                labels={trends.monthly.map((m) => monthLabel(m.month))}
+                series={[
+                  {
+                    name: 'Conversion',
+                    color: '#B8643A',
+                    values: trends.monthly.map((m) => (m.views > 0 ? (m.paid / m.views) * 100 : null)),
+                  },
+                ]}
+                axisFormat={(v) => `${v.toFixed(0)}%`}
+                tipFormat={(v) => `${v.toFixed(1)}%`}
+              />
+            </div>
+          </div>
+
+          <div className="card">
+            <p className="eyebrow">Last 30 days</p>
+            <h2 className="mt-2 text-xl">Visits and purchases each day</h2>
+            <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+              Page views and paid students for each of the last 30 days.
+            </p>
+            <div className="mt-6">
+              <LineChart
+                label="Views and purchases by day"
+                labels={trends.daily.map((d) => dayLabel(d.day))}
+                series={[
+                  { name: 'Page views', color: '#1B2A4A', values: trends.daily.map((d) => d.views) },
+                  { name: 'Paid students', color: '#B8643A', values: trends.daily.map((d) => d.paid) },
+                ]}
+                axisFormat={(v) => String(Math.round(v))}
+                tipFormat={(v) => String(Math.round(v))}
+              />
+            </div>
+            <Legend
+              series={[
+                { name: 'Page views', color: '#1B2A4A', values: [] },
+                { name: 'Paid students', color: '#B8643A', values: [] },
+              ]}
+            />
+          </div>
+        </div>
+      )}
+
+      {summary && (
+        <>
           <div className="mt-14 grid gap-10 lg:grid-cols-2">
             <div>
               <h2 className="text-2xl">Sales by section</h2>
@@ -180,6 +292,7 @@ export default function AdminAnalytics() {
 
             <div>
               <h2 className="text-2xl">Monthly revenue</h2>
+              <p className="mt-2 text-sm text-brand-muted">For the period you selected above.</p>
               {summary.monthly.length === 0 && (
                 <p className="mt-4 text-sm text-brand-muted">No sales in this period.</p>
               )}
@@ -245,7 +358,7 @@ export default function AdminAnalytics() {
               })}
             </div>
           </div>
-        </div>
+        </>
       )}
     </section>
   )
