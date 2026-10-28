@@ -4,6 +4,7 @@ import Header from './components/Header'
 import AdminRoute from './components/AdminRoute'
 import TeacherRoute from './components/TeacherRoute'
 import SessionViewTracker from './components/SessionViewTracker'
+import WhatsAppChat from './components/WhatsAppChat'
 import Home from './pages/Home'
 import Sessions from './pages/Sessions'
 import SessionDetail from './pages/SessionDetail'
@@ -137,6 +138,7 @@ export default function App() {
         </Suspense>
       </main>
       <Footer />
+      <WhatsAppChat />
     </div>
   )
 }
