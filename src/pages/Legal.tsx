@@ -67,7 +67,7 @@ const DOCS: Record<'terms' | 'privacy' | 'refunds', Doc> = {
       },
       {
         heading: 'Contact',
-        body: ['Questions about these terms: hello@skillbloom.example (replace with your real contact email).'],
+        body: ['Questions about these terms: Message (skillbloom774@gmail.com).'],
       },
     ],
   },
