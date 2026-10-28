@@ -126,7 +126,7 @@ const DOCS: Record<'terms' | 'privacy' | 'refunds', Doc> = {
       },
       {
         heading: 'Contact',
-        body: ['Data protection questions: hello@skillbloom.example (replace with your real contact email).'],
+        body: ['Data protection questions:skilbllom774@gmail.com.'],
       },
     ],
   },
