@@ -1,19 +1,15 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
-import { createHmac } from 'node:crypto'
 import { sendEmail } from '../_shared/email.ts'
 import { receiptEmail } from '../_shared/emails.ts'
+import { signedWithMode } from '../_shared/paystack.ts'
 
 Deno.serve(async (req) => {
   if (req.method !== 'POST') return new Response('method not allowed', { status: 405 })
 
-  // Paystack signs every webhook with your secret key. Reject anything that doesn't match.
+  // The signature tells us which mode (live or test) sent this webhook. Anything unsigned is rejected.
   const rawBody = await req.text()
-  const signature = req.headers.get('x-paystack-signature') ?? ''
-  const expected = createHmac('sha512', Deno.env.get('PAYSTACK_SECRET_KEY')!)
-    .update(rawBody)
-    .digest('hex')
-
-  if (signature !== expected) return new Response('invalid signature', { status: 401 })
+  const signedMode = await signedWithMode(rawBody, req.headers.get('x-paystack-signature'))
+  if (!signedMode) return new Response('invalid signature', { status: 401 })
 
   const event = JSON.parse(rawBody)
   if (event.event !== 'charge.success') return new Response('ignored', { status: 200 })
@@ -28,16 +24,21 @@ Deno.serve(async (req) => {
 
   const { data: purchase } = await admin
     .from('purchases')
-    .select('id, status, amount_paid_kobo, session_id, discount_code_id, student_id, card_id')
+    .select('id, status, amount_paid_kobo, session_id, discount_code_id, student_id, card_id, paystack_mode')
     .eq('paystack_reference', reference)
     .maybeSingle()
 
   if (!purchase) return new Response('unknown reference', { status: 200 })
 
+  // A test-mode webhook must never confirm a live purchase, and the reverse
+  if (purchase.paystack_mode !== signedMode) {
+    console.error('Mode mismatch', { reference, signedMode, purchaseMode: purchase.paystack_mode })
+    return new Response('mode mismatch', { status: 400 })
+  }
+
   // Paystack retries webhooks, so a repeat must do nothing
   if (purchase.status === 'paid') return new Response('already processed', { status: 200 })
 
-  // Keep a record of every successful charge event
   await admin.from('payment_events').upsert(
     { reference, event_type: event.event, payload: event },
     { onConflict: 'reference', ignoreDuplicates: true },

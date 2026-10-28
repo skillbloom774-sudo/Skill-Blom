@@ -1,4 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
+import { currentMode, secretFor } from '../_shared/paystack.ts'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -28,7 +29,6 @@ Deno.serve(async (req) => {
     const { data: { user } } = await userClient.auth.getUser()
     if (!user) return respond({ error: 'Please sign in before buying access.' }, 401)
 
-    // The rest uses the service role so it can read prices and write purchases
     const admin = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
@@ -118,6 +118,8 @@ Deno.serve(async (req) => {
       return respond({ error: 'The price after discount is below the ₦50 minimum.' }, 400)
     }
 
+    // The mode is fixed when the purchase is created, so everything later uses the same key
+    const mode = currentMode()
     const reference = `SB-${crypto.randomUUID()}`
 
     const { error: insertError } = await admin.from('purchases').insert({
@@ -126,6 +128,7 @@ Deno.serve(async (req) => {
       discount_code_id: discountCodeId,
       amount_paid_kobo: amount,
       paystack_reference: reference,
+      paystack_mode: mode,
       status: 'pending',
     })
     if (insertError) {
@@ -136,7 +139,7 @@ Deno.serve(async (req) => {
     const paystackRes = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
+        Authorization: `Bearer ${secretFor(mode)}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -145,7 +148,7 @@ Deno.serve(async (req) => {
         currency: 'NGN',
         reference,
         callback_url,
-        metadata: { session_id: session.id, student_id: user.id },
+        metadata: { session_id: session.id, student_id: user.id, mode },
       }),
     })
     const paystack = await paystackRes.json()

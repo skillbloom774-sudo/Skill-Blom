@@ -1,5 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { sendEmail } from '../_shared/email.ts'
+import { secretFor } from '../_shared/paystack.ts'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -63,7 +64,7 @@ Deno.serve(async (req) => {
 
     const { data: purchase } = await admin
       .from('purchases')
-      .select('id, status, paystack_reference, amount_paid_kobo, student_id, sessions(title)')
+      .select('id, status, paystack_reference, amount_paid_kobo, student_id, paystack_mode, sessions(title)')
       .eq('id', purchase_id)
       .maybeSingle()
 
@@ -72,11 +73,12 @@ Deno.serve(async (req) => {
       return respond({ error: 'Only paid purchases can be refunded.' }, 400)
     }
 
-    // Send the money back through Paystack first. Records change only after Paystack accepts it.
+    // Send the money back through Paystack first, using the key of the mode the payment was made in.
+    // Records change only after Paystack accepts it.
     const refundRes = await fetch('https://api.paystack.co/refund', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
+        Authorization: `Bearer ${secretFor(purchase.paystack_mode)}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -120,6 +122,7 @@ Deno.serve(async (req) => {
       target_id: purchase.id,
       details: {
         reference: purchase.paystack_reference,
+        mode: purchase.paystack_mode,
         amount_kobo: purchase.amount_paid_kobo,
         reason: reason ?? null,
       },

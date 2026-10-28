@@ -1,6 +1,7 @@
 import { createClient, type SupabaseClient } from 'jsr:@supabase/supabase-js@2'
 import { sendEmail } from '../_shared/email.ts'
 import { receiptEmail } from '../_shared/emails.ts'
+import { secretFor } from '../_shared/paystack.ts'
 
 // Payments still pending after this many minutes are checked with Paystack
 const CHECK_AFTER_MINUTES = 10
@@ -14,6 +15,7 @@ type Pending = {
   session_id: string
   discount_code_id: string | null
   card_id: string
+  paystack_mode: 'live' | 'test'
 }
 
 function json(body: Record<string, unknown>, status = 200) {
@@ -99,7 +101,7 @@ Deno.serve(async (req) => {
   const cutoff = new Date(Date.now() - CHECK_AFTER_MINUTES * 60_000).toISOString()
   const { data: pending, error } = await admin
     .from('purchases')
-    .select('id, paystack_reference, amount_paid_kobo, student_id, session_id, discount_code_id, card_id')
+    .select('id, paystack_reference, amount_paid_kobo, student_id, session_id, discount_code_id, card_id, paystack_mode')
     .eq('status', 'pending')
     .lt('created_at', cutoff)
     .limit(BATCH_SIZE)
@@ -111,9 +113,10 @@ Deno.serve(async (req) => {
   for (const p of (pending as Pending[]) ?? []) {
     counts.checked++
     try {
+      // Each purchase is checked with the key of the mode it was made in
       const res = await fetch(
         `https://api.paystack.co/transaction/verify/${encodeURIComponent(p.paystack_reference)}`,
-        { headers: { Authorization: `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}` } },
+        { headers: { Authorization: `Bearer ${secretFor(p.paystack_mode)}` } },
       )
       const body = await res.json().catch(() => null)
       const tx = body?.data
@@ -138,7 +141,6 @@ Deno.serve(async (req) => {
           .eq('status', 'pending')
         counts.marked_failed++
       } else {
-        // Still being processed. The next run checks again.
         counts.still_processing++
       }
     } catch (err) {
