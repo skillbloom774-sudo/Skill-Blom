@@ -1,3 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #1B2A4A;
+  --color-brand-primary-soft: #E8ECF5;
+  --color-brand-accent: #B8643A;
+  --color-brand-accent-soft: #F6EBE4;
+  --color-brand-background: #FAF8F4;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-text: #1F2430;
+  --color-brand-muted: #667085;
+  --color-brand-border: #E4E7EC;
+  --color-brand-success: #2E7D5B;
+  --color-brand-error: #B42318;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --shadow-card: 0 1px 2px rgb(27 42 74 / 0.04), 0 10px 30px rgb(27 42 74 / 0.06);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-brand-background font-sans text-brand-text antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif font-medium tracking-tight text-brand-text;
+    overflow-wrap: anywhere;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+  }
+
+  ::selection {
+    background: var(--color-brand-primary-soft);
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-brand-muted;
+  }
+  .card {
+    @apply rounded-2xl border border-brand-border bg-brand-surface p-6 shadow-card;
+  }
+  .pill {
+    @apply inline-flex items-center rounded-full bg-brand-primary-soft px-3 py-1 text-xs font-medium text-brand-primary;
+  }
+  .label {
+    @apply mb-2 block text-sm font-medium text-brand-text;
+  }
+  /* 16px on phones stops iOS zooming in when a field is tapped */
+  .field {
+    @apply w-full rounded-xl border border-brand-border bg-brand-surface px-4 py-3 text-base text-brand-text transition placeholder:text-brand-muted/60 focus:border-brand-primary focus:outline-none focus:ring-4 focus:ring-brand-primary/10 sm:text-[15px];
+  }
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-primary px-5 py-3 text-[15px] font-medium text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-accent {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-accent px-5 py-3 text-[15px] font-medium text-white transition hover:bg-brand-accent/90 disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-brand-border bg-brand-surface px-5 py-3 text-[15px] font-medium text-brand-text transition hover:border-brand-primary hover:text-brand-primary;
+  }
+}
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  header,
+  footer {
+    display: none !important;
+  }
+
+  .certificate {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
 /* ===== Dark mode ===== */
 html.dark {
   color-scheme: dark;
