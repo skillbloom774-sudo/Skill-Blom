@@ -4,8 +4,12 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { AuthProvider } from './lib/auth'
 import { installErrorHandlers } from './lib/errorLog'
+import { initTheme } from './lib/theme'
 import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
+
+// Apply the saved light or dark mode before the first page draws, so there is no flash
+initTheme()
 
 // Must run before the app renders, so errors thrown anywhere are captured
 installErrorHandlers()
