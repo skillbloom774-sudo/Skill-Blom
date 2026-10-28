@@ -1,3 +1,6 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/share/:id", "destination": "/api/session-preview?id=:id" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

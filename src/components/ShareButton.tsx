@@ -1,15 +1,12 @@
 import { useState } from 'react'
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined
+import { SITE_URL } from '../lib/site'
 
 export default function ShareButton({ sessionId, title }: { sessionId: string; title: string }) {
   const [message, setMessage] = useState<string | null>(null)
   const [link, setLink] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
-  const shareLink = SUPABASE_URL
-    ? `${SUPABASE_URL}/functions/v1/session-preview?id=${sessionId}`
-    : null
+  const shareLink = `${SITE_URL}/share/${sessionId}`
 
   async function copyLink(url: string) {
     try {
@@ -22,12 +19,6 @@ export default function ShareButton({ sessionId, title }: { sessionId: string; t
 
   async function handleShare() {
     setMessage(null)
-
-    if (!shareLink) {
-      setMessage('The share link is not set up yet. Check VITE_SUPABASE_URL in .env.local.')
-      return
-    }
-
     setLink(shareLink)
     setBusy(true)
 
@@ -39,7 +30,6 @@ export default function ShareButton({ sessionId, title }: { sessionId: string; t
         setBusy(false)
         return
       } catch (err) {
-        // Closing the share menu is not an error, so just fall through to copying
         if ((err as Error).name === 'AbortError') {
           setBusy(false)
           return
