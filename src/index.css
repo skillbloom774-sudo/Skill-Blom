@@ -1,17 +1,47 @@
 @import "tailwindcss";
 
+/* Light and dark colour values. The toggle switches between them by adding the "dark" class to the page. */
+:root {
+  --c-primary: #1B2A4A;
+  --c-primary-soft: #E8ECF5;
+  --c-accent: #B8643A;
+  --c-accent-soft: #F6EBE4;
+  --c-background: #FAF8F4;
+  --c-surface: #FFFFFF;
+  --c-text: #1F2430;
+  --c-muted: #667085;
+  --c-border: #E4E7EC;
+  --c-success: #2E7D5B;
+  --c-error: #B42318;
+}
+
+html.dark {
+  color-scheme: dark;
+  --c-primary: #4D6CB0;
+  --c-primary-soft: #1E2B47;
+  --c-accent: #D88A5E;
+  --c-accent-soft: #3A2A22;
+  --c-background: #0E1524;
+  --c-surface: #172238;
+  --c-text: #EEF1F7;
+  --c-muted: #9AA4B8;
+  --c-border: #2A3650;
+  --c-success: #5FBF91;
+  --c-error: #F08A80;
+}
+
 @theme {
-  --color-brand-primary: #1B2A4A;
-  --color-brand-primary-soft: #E8ECF5;
-  --color-brand-accent: #B8643A;
-  --color-brand-accent-soft: #F6EBE4;
-  --color-brand-background: #FAF8F4;
-  --color-brand-surface: #FFFFFF;
-  --color-brand-text: #1F2430;
-  --color-brand-muted: #667085;
-  --color-brand-border: #E4E7EC;
-  --color-brand-success: #2E7D5B;
-  --color-brand-error: #B42318;
+  --color-brand-primary: var(--c-primary);
+  --color-brand-primary-soft: var(--c-primary-soft);
+  --color-brand-accent: var(--c-accent);
+  --color-brand-accent-soft: var(--c-accent-soft);
+  --color-brand-background: var(--c-background);
+  --color-brand-surface: var(--c-surface);
+  --color-brand-text: var(--c-text);
+  --color-brand-muted: var(--c-muted);
+  --color-brand-border: var(--c-border);
+  --color-brand-success: var(--c-success);
+  --color-brand-error: var(--c-error);
   --font-serif: "Fraunces", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --shadow-card: 0 1px 2px rgb(27 42 74 / 0.04), 0 10px 30px rgb(27 42 74 / 0.06);
@@ -40,7 +70,7 @@
   }
 
   ::selection {
-    background: var(--color-brand-primary-soft);
+    background: var(--c-primary-soft);
   }
 }
 
