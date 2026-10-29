@@ -1,17 +1,47 @@
 @import "tailwindcss";
 
+/* Light and dark colour values. The toggle switches between them by adding the "dark" class to the page. */
+:root {
+  --c-primary: #1B2A4A;
+  --c-primary-soft: #E8ECF5;
+  --c-accent: #B8643A;
+  --c-accent-soft: #F6EBE4;
+  --c-background: #FAF8F4;
+  --c-surface: #FFFFFF;
+  --c-text: #1F2430;
+  --c-muted: #667085;
+  --c-border: #E4E7EC;
+  --c-success: #2E7D5B;
+  --c-error: #B42318;
+}
+
+html.dark {
+  color-scheme: dark;
+  --c-primary: #4D6CB0;
+  --c-primary-soft: #1E2B47;
+  --c-accent: #D88A5E;
+  --c-accent-soft: #3A2A22;
+  --c-background: #0E1524;
+  --c-surface: #172238;
+  --c-text: #EEF1F7;
+  --c-muted: #9AA4B8;
+  --c-border: #2A3650;
+  --c-success: #5FBF91;
+  --c-error: #F08A80;
+}
+
 @theme {
-  --color-brand-primary: #1B2A4A;
-  --color-brand-primary-soft: #E8ECF5;
-  --color-brand-accent: #B8643A;
-  --color-brand-accent-soft: #F6EBE4;
-  --color-brand-background: #FAF8F4;
-  --color-brand-surface: #FFFFFF;
-  --color-brand-text: #1F2430;
-  --color-brand-muted: #667085;
-  --color-brand-border: #E4E7EC;
-  --color-brand-success: #2E7D5B;
-  --color-brand-error: #B42318;
+  --color-brand-primary: var(--c-primary);
+  --color-brand-primary-soft: var(--c-primary-soft);
+  --color-brand-accent: var(--c-accent);
+  --color-brand-accent-soft: var(--c-accent-soft);
+  --color-brand-background: var(--c-background);
+  --color-brand-surface: var(--c-surface);
+  --color-brand-text: var(--c-text);
+  --color-brand-muted: var(--c-muted);
+  --color-brand-border: var(--c-border);
+  --color-brand-success: var(--c-success);
+  --color-brand-error: var(--c-error);
   --font-serif: "Fraunces", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --shadow-card: 0 1px 2px rgb(27 42 74 / 0.04), 0 10px 30px rgb(27 42 74 / 0.06);
@@ -40,7 +70,7 @@
   }
 
   ::selection {
-    background: var(--color-brand-primary-soft);
+    background: var(--c-primary-soft);
   }
 }
 
@@ -74,6 +104,7 @@
     @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-brand-border bg-brand-surface px-5 py-3 text-[15px] font-medium text-brand-text transition hover:border-brand-primary hover:text-brand-primary;
   }
 }
+
 @media print {
   @page {
     size: A4 portrait;
@@ -93,61 +124,4 @@
     break-inside: avoid;
     page-break-inside: avoid;
   }
-}
-/* ===== Dark mode ===== */
-html.dark {
-  color-scheme: dark;
-}
-
-html.dark body {
-  background-color: #0e1524;
-  color: #eef1f7;
-}
-
-html.dark .bg-brand-background { background-color: #0e1524; }
-html.dark .bg-brand-background\/90 { background-color: rgba(14, 21, 36, 0.9); }
-html.dark .bg-brand-surface { background-color: #172238; }
-html.dark .bg-brand-primary-soft { background-color: #1e2b47; }
-html.dark .bg-brand-border\/60 { background-color: rgba(42, 54, 80, 0.6); }
-html.dark .bg-brand-border { background-color: #2a3650; }
-html.dark .border-brand-border { border-color: #2a3650; }
-html.dark .text-brand-text { color: #eef1f7; }
-html.dark .text-brand-muted { color: #9aa4b8; }
-html.dark .text-brand-primary { color: #a9bce3; }
-html.dark .text-brand-accent { color: #d88a5e; }
-
-html.dark .card {
-  background-color: #172238;
-  border-color: #2a3650;
-}
-
-html.dark .field {
-  background-color: #101a2e;
-  color: #eef1f7;
-  border-color: #2a3650;
-}
-
-html.dark .field::placeholder {
-  color: #7d879b;
-}
-
-html.dark .btn-ghost {
-  background-color: #172238;
-  color: #eef1f7;
-  border-color: #2a3650;
-}
-
-html.dark .btn-ghost:hover {
-  border-color: #a9bce3;
-}
-
-html.dark .pill {
-  filter: brightness(0.85);
-}
-
-/* Stop the page scrolling sideways on phones if something is too wide */
-html,
-body {
-  max-width: 100%;
-  overflow-x: hidden;
 }

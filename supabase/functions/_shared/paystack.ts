@@ -5,12 +5,17 @@ export function currentMode(): PaystackMode {
   return Deno.env.get('PAYSTACK_MODE') === 'test' ? 'test' : 'live'
 }
 
-// The secret key for a given mode. Fails loudly if it was never set.
+// The secret key for a given mode. Refuses a key that belongs to the other mode.
 export function secretFor(mode: PaystackMode): string {
   const key = mode === 'test'
     ? Deno.env.get('PAYSTACK_TEST_SECRET_KEY')
     : Deno.env.get('PAYSTACK_LIVE_SECRET_KEY')
   if (!key) throw new Error(`Paystack ${mode} key is not set`)
+
+  const expected = mode === 'test' ? 'sk_test_' : 'sk_live_'
+  if (!key.startsWith(expected)) {
+    throw new Error(`The ${mode} key is wrong. It should start with ${expected}`)
+  }
   return key
 }
 
