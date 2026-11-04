@@ -29,6 +29,7 @@ const SessionExports = lazy(() => import('./pages/SessionExports'))
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'))
 const AdminExports = lazy(() => import('./pages/admin/AdminExports'))
 const AdminPayouts = lazy(() => import('./pages/admin/AdminPayouts'))
+const AdminMessages = lazy(() => import('./pages/admin/AdminMessages'))
 const AdminSections = lazy(() => import('./pages/admin/AdminSections'))
 const AdminTeachers = lazy(() => import('./pages/admin/AdminTeachers'))
 const AdminSessions = lazy(() => import('./pages/admin/AdminSessions'))
@@ -127,6 +128,7 @@ export default function App() {
 
             <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
             <Route path="/admin/payouts" element={<AdminRoute><AdminPayouts /></AdminRoute>} />
+            <Route path="/admin/messages" element={<AdminRoute><AdminMessages /></AdminRoute>} />
             <Route path="/admin/sections" element={<AdminRoute><AdminSections /></AdminRoute>} />
             <Route path="/admin/teachers" element={<AdminRoute><AdminTeachers /></AdminRoute>} />
             <Route path="/admin/sessions" element={<AdminRoute><AdminSessions /></AdminRoute>} />
