@@ -53,6 +53,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [consent, setConsent] = useState(false)
+  const [marketing, setMarketing] = useState(false)
   const [pendingEmail, setPendingEmail] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -171,7 +172,12 @@ export default function Login() {
       email: cleanEmail,
       password,
       options: {
-        data: { full_name: fullName, phone },
+        data: {
+          full_name: fullName,
+          phone,
+          // Only used to send promotional emails, and the student can change it later
+          marketing_opt_in: marketing,
+        },
         emailRedirectTo: `${window.location.origin}/login`,
         ...captchaOptions,
       },
@@ -319,19 +325,34 @@ export default function Login() {
               )}
 
               {mode === 'signup' && (
-                <label className="flex items-start gap-3 text-sm leading-relaxed text-brand-muted">
-                  <input
-                    type="checkbox"
-                    checked={consent}
-                    onChange={(e) => setConsent(e.target.checked)}
-                    className="mt-1 h-4 w-4 accent-brand-primary"
-                  />
-                  <span>
-                    I agree to the{' '}
-                    <Link to="/terms" className="text-brand-primary underline">Terms</Link> and the{' '}
-                    <Link to="/privacy" className="text-brand-primary underline">Privacy Notice</Link>.
-                  </span>
-                </label>
+                <>
+                  <label className="flex items-start gap-3 text-sm leading-relaxed text-brand-muted">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => setConsent(e.target.checked)}
+                      className="mt-1 h-4 w-4 accent-brand-primary"
+                    />
+                    <span>
+                      I agree to the{' '}
+                      <Link to="/terms" className="text-brand-primary underline">Terms</Link> and the{' '}
+                      <Link to="/privacy" className="text-brand-primary underline">Privacy Notice</Link>.
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-3 text-sm leading-relaxed text-brand-muted">
+                    <input
+                      type="checkbox"
+                      checked={marketing}
+                      onChange={(e) => setMarketing(e.target.checked)}
+                      className="mt-1 h-4 w-4 accent-brand-primary"
+                    />
+                    <span>
+                      Send me updates about new sessions, offers and discount codes from Skillbloom. You can
+                      unsubscribe at any time.
+                    </span>
+                  </label>
+                </>
               )}
 
               {CAPTCHA_ENABLED && (

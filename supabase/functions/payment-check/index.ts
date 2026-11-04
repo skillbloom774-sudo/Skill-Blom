@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from 'jsr:@supabase/supabase-js@2'
 import { sendEmail } from '../_shared/email.ts'
-import { receiptEmail } from '../_shared/emails.ts'
+import { receiptEmailV2 } from '../_shared/templates.ts'
 import { secretFor } from '../_shared/paystack.ts'
 
 // Payments still pending after this many minutes are checked with Paystack
@@ -29,7 +29,7 @@ function json(body: Record<string, unknown>, status = 200) {
 async function grantAccess(admin: SupabaseClient, p: Pending): Promise<boolean> {
   const { data: session } = await admin
     .from('sessions')
-    .select('title, access_ends_at')
+    .select('title, starts_at, access_ends_at, sections(name), guest_teachers(name)')
     .eq('id', p.session_id)
     .single()
   if (!session) return false
@@ -67,17 +67,31 @@ async function grantAccess(admin: SupabaseClient, p: Pending): Promise<boolean> 
     ])
     const email = account?.user?.email
     if (email) {
-      const accessEnds = new Date(session.access_ends_at).toLocaleDateString('en-NG', {
-        timeZone: 'Africa/Lagos',
-        dateStyle: 'long',
-      })
-      const { subject, html } = receiptEmail({
+      const info = session as unknown as {
+        title: string
+        starts_at: string
+        access_ends_at: string
+        sections: { name: string } | null
+        guest_teachers: { name: string } | null
+      }
+      const siteUrl = Deno.env.get('SITE_URL') ?? 'https://skill-blom.vercel.app'
+      const { subject, html } = receiptEmailV2({
         name: profile?.full_name ?? 'there',
-        sessionTitle: session.title,
+        sessionTitle: info.title,
+        section: info.sections?.name ?? '',
+        teacher: info.guest_teachers?.name ?? 'your guest teacher',
+        firstSession: new Date(info.starts_at).toLocaleString('en-NG', {
+          timeZone: 'Africa/Lagos',
+          dateStyle: 'long',
+          timeStyle: 'short',
+        }),
         amountNaira: `₦${(p.amount_paid_kobo / 100).toLocaleString('en-NG')}`,
-        cardId: p.card_id,
-        accessEnds,
-        cardUrl: `${Deno.env.get('SITE_URL')}/cards/${p.card_id}`,
+        accessEnds: new Date(info.access_ends_at).toLocaleDateString('en-NG', {
+          timeZone: 'Africa/Lagos',
+          dateStyle: 'long',
+        }),
+        cardUrl: `${siteUrl}/cards/${p.card_id}`,
+        siteUrl,
       })
       await sendEmail(email, subject, html)
     }
