@@ -88,6 +88,7 @@ export default function Header() {
                       <Link to="/admin/refunds" className={menuItem}>Refund requests</Link>
                       <Link to="/admin/exports" className={menuItem}>Exports</Link>
                       <Link to="/admin/payouts" className={menuItem}>Payout details</Link>
+                      <Link to="/admin/session-payouts" className={menuItem}>Session payouts</Link>
                       <Link to="/admin/moderation" className={menuItem}>Moderation</Link>
                       <Link to="/admin/sections" className={menuItem}>Sections</Link>
                       <Link to="/admin/teachers" className={menuItem}>Teachers</Link>
