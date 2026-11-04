@@ -12,7 +12,7 @@ type Teacher = { id: string; name: string }
 
 export default function AdminPayouts() {
   const [rows, setRows] = useState<Row[] | null>(null)
-  const [teachers, setTeachers] = useState<Teacher[]>([])
+  const [teachers, setTeachers] = useState<Teacher[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
 
@@ -20,12 +20,21 @@ export default function AdminPayouts() {
     let ignore = false
     Promise.all([
       supabase.functions.invoke('payout-details', { body: { action: 'list' } }),
-      supabase.from('guest_teachers').select('id, name').order('name'),
+      supabase.functions.invoke('payout-details', { body: { action: 'teachers' } }),
     ]).then(([listRes, teacherRes]) => {
       if (ignore) return
-      if (listRes.error) setError('Payout details could not be loaded.')
+
+      if (listRes.error) {
+        setError('Saved payout details could not be loaded. Refresh the page to try again.')
+      }
       setRows((listRes.data?.rows as Row[]) ?? [])
-      setTeachers((teacherRes.data as Teacher[]) ?? [])
+
+      if (teacherRes.error) {
+        setError('The teacher list could not be loaded. Refresh the page to try again.')
+        setTeachers([])
+      } else {
+        setTeachers((teacherRes.data?.teachers as Teacher[]) ?? [])
+      }
     })
     return () => {
       ignore = true
@@ -53,36 +62,37 @@ export default function AdminPayouts() {
 
       {rows && (
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <PayoutForm
-            shareRole="admin"
-            title="Admin"
-            saved={findRow('admin')}
-            onSaved={reload}
-          />
-          <PayoutForm
-            shareRole="developer"
-            title="Developer"
-            saved={findRow('developer')}
-            onSaved={reload}
-          />
+          <PayoutForm shareRole="admin" title="Admin" saved={findRow('admin')} onSaved={reload} />
+          <PayoutForm shareRole="developer" title="Developer" saved={findRow('developer')} onSaved={reload} />
         </div>
       )}
 
-      {rows && teachers.length > 0 && (
+      {rows && (
         <>
           <h2 className="mt-14 text-2xl">Teachers</h2>
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
-            {teachers.map((t) => (
-              <PayoutForm
-                key={t.id}
-                shareRole="teacher"
-                guestTeacherId={t.id}
-                title={t.name}
-                saved={findRow('teacher', t.id)}
-                onSaved={reload}
-              />
-            ))}
-          </div>
+
+          {teachers === null && <p className="mt-6 text-brand-muted">Loading teachers</p>}
+
+          {teachers && teachers.length === 0 && (
+            <p className="mt-6 text-brand-muted">
+              No teachers have been added yet. Add a teacher on the Teachers page, then they will appear here.
+            </p>
+          )}
+
+          {teachers && teachers.length > 0 && (
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              {teachers.map((t) => (
+                <PayoutForm
+                  key={t.id}
+                  shareRole="teacher"
+                  guestTeacherId={t.id}
+                  title={t.name}
+                  saved={findRow('teacher', t.id)}
+                  onSaved={reload}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
     </section>

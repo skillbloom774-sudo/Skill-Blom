@@ -70,7 +70,14 @@ Deno.serve(async (req) => {
         .sort((a, b) => a.name.localeCompare(b.name))
       return respond({ banks })
     }
-
+    
+        if (body.action === 'teachers') {
+      if (!isAdmin) return respond({ error: 'Only the admin can see all teachers.' }, 403)
+      const { data, error } = await admin.from('guest_teachers').select('id, name').order('name')
+      if (error) return respond({ error: error.message }, 500)
+      return respond({ teachers: data ?? [] })
+    }
+    
     if (body.action === 'list') {
       let query = admin
         .from('payout_recipients')
