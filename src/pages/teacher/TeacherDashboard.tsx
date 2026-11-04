@@ -51,6 +51,7 @@ export default function TeacherDashboard() {
     <section className="container-page py-14 sm:py-20">
       <p className="eyebrow">Teaching</p>
       <h1 className="mt-3 text-4xl">{name ? `Welcome, ${name}` : 'Your sessions'}</h1>
+      <Link to="/teacher/payout" className="btn-ghost mt-5 inline-flex w-fit px-4 py-2 text-sm">Payout details</Link>
 
       {sessions === null && <p className="mt-10 text-sm text-brand-muted">Loading sessions</p>}
 

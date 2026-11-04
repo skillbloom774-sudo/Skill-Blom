@@ -28,6 +28,7 @@ import { SITE_NAME, SUPPORT_EMAIL } from './lib/site'
 const SessionExports = lazy(() => import('./pages/SessionExports'))
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'))
 const AdminExports = lazy(() => import('./pages/admin/AdminExports'))
+const AdminPayouts = lazy(() => import('./pages/admin/AdminPayouts'))
 const AdminSections = lazy(() => import('./pages/admin/AdminSections'))
 const AdminTeachers = lazy(() => import('./pages/admin/AdminTeachers'))
 const AdminSessions = lazy(() => import('./pages/admin/AdminSessions'))
@@ -43,6 +44,7 @@ const TeacherSession = lazy(() => import('./pages/teacher/TeacherSession'))
 const TeacherMarking = lazy(() => import('./pages/teacher/TeacherMarking'))
 const TeacherChat = lazy(() => import('./pages/teacher/TeacherChat'))
 const TeacherAttendance = lazy(() => import('./pages/teacher/TeacherAttendance'))
+const TeacherPayout = lazy(() => import('./pages/teacher/TeacherPayout'))
 
 function Footer() {
   return (
@@ -116,6 +118,7 @@ export default function App() {
             <Route path="/refunds" element={<Legal doc="refunds" />} />
 
             <Route path="/teacher" element={<TeacherRoute><TeacherDashboard /></TeacherRoute>} />
+            <Route path="/teacher/payout" element={<TeacherRoute><TeacherPayout /></TeacherRoute>} />
             <Route path="/teacher/sessions/:id" element={<TeacherRoute><TeacherSession /></TeacherRoute>} />
             <Route path="/teacher/sessions/:id/marking" element={<TeacherRoute><TeacherMarking /></TeacherRoute>} />
             <Route path="/teacher/sessions/:id/chat" element={<TeacherRoute><TeacherChat /></TeacherRoute>} />
@@ -123,6 +126,7 @@ export default function App() {
             <Route path="/teacher/sessions/:id/exports" element={<TeacherRoute><SessionExports /></TeacherRoute>} />
 
             <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
+            <Route path="/admin/payouts" element={<AdminRoute><AdminPayouts /></AdminRoute>} />
             <Route path="/admin/sections" element={<AdminRoute><AdminSections /></AdminRoute>} />
             <Route path="/admin/teachers" element={<AdminRoute><AdminTeachers /></AdminRoute>} />
             <Route path="/admin/sessions" element={<AdminRoute><AdminSessions /></AdminRoute>} />
