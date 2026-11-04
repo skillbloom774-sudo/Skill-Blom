@@ -29,7 +29,8 @@ export function teacherInviteEmail(p: {
 
     <p style="margin-top:24px;"><strong>Your share</strong></p>
     <p>You'll receive 20% of the amount collected for your session, after Paystack's processing fee has been deducted. Payment is made after the session ends, once the Skillbloom admin sends the payout. It goes directly to the bank account you give us, and you'll get an email when it has been sent.</p>
-    <p>To receive it, please reply to this email with your full name as it appears on your bank account, your bank name, and your account number. We'll check it before any payment is made.</p>
+        <p>To receive it, add your bank account on your teaching page. Open <strong>Teaching</strong>, then <strong>Payout details</strong>, and enter your bank and account number. The account name is checked with the bank before it's saved, so please make sure it matches your name.</p>
+    <p>You can do this at <a href="${esc(p.siteUrl)}/teacher/payout" style="color:#1B2A4A;">${esc(p.siteUrl.replace('https://', ''))}/teacher/payout</a>.</p>
 
     <p style="margin-top:24px;"><strong>What you can do on your teaching page</strong></p>
         <p style="margin-top:24px;"><strong>Set your password</strong></p>
