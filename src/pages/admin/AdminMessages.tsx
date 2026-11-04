@@ -41,6 +41,8 @@ export default function AdminMessages() {
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<string | null>(null)
 
+    // Once the student list has loaded, tick the student from the link, if there is one
+ 
   useEffect(() => {
     let ignore = false
     Promise.all([

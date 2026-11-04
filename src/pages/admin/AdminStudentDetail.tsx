@@ -139,11 +139,19 @@ export default function AdminStudentDetail() {
         ← All students
       </Link>
 
-      <p className="eyebrow mt-8">Student</p>
-      <h1 className="mt-3 text-4xl">{profile.full_name?.trim() || 'No name'}</h1>
-      <p className="mt-3 text-brand-muted">
-        {email ?? 'No email'} · {profile.phone ?? 'No phone'} · Joined {day(profile.created_at)}
-      </p>
+      <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="eyebrow">Student</p>
+          <h1 className="mt-3 text-4xl">{profile.full_name?.trim() || 'No name'}</h1>
+          <p className="mt-3 text-brand-muted">
+            {email ?? 'No email'} · {profile.phone ?? 'No phone'} · Joined {day(profile.created_at)}
+          </p>
+        </div>
+
+        <Link to={`/admin/messages?student=${profile.id}`} className="btn-primary shrink-0">
+          Message student
+        </Link>
+      </div>
 
       <div className="mt-10 grid gap-5 sm:grid-cols-4">
         <div className="card">
