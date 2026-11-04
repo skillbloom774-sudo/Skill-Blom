@@ -11,6 +11,7 @@ export default function Profile() {
   const navigate = useNavigate()
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
+  const [offers, setOffers] = useState(false)
   const [activeCount, setActiveCount] = useState<number | null>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState<string | null>(null)
@@ -35,6 +36,7 @@ export default function Profile() {
       if (ignore) return
       setFullName(profileRes.data?.full_name ?? '')
       setPhone(profileRes.data?.phone ?? '')
+      setOffers(user.user_metadata?.marketing_opt_in === true)
       setActiveCount(countRes.count ?? 0)
     })
 
@@ -61,8 +63,11 @@ export default function Profile() {
       .eq('id', user!.id)
 
     if (!error) {
-      // Keeps the name in the header and greeting in step with the profile
-      await supabase.auth.updateUser({ data: { full_name: cleanName } })
+      // Keeps the name in the header and greeting in step with the profile,
+      // and stores the offers choice on the account so unsubscribe links agree with it
+      await supabase.auth.updateUser({
+        data: { full_name: cleanName, marketing_opt_in: offers },
+      })
     }
 
     setSaving(false)
@@ -117,6 +122,24 @@ export default function Profile() {
           <label className="label" htmlFor="pf-phone">Phone number</label>
           <input id="pf-phone" className="field" value={phone} onChange={(e) => setPhone(e.target.value)} />
         </div>
+
+        {isStudent && (
+          <div>
+            <p className="label">Offers and discount codes</p>
+            <label className="flex items-start gap-3 text-sm leading-relaxed text-brand-muted">
+              <input
+                type="checkbox"
+                checked={offers}
+                onChange={(e) => setOffers(e.target.checked)}
+                className="mt-1 h-4 w-4 accent-brand-primary"
+              />
+              <span>
+                Send me updates about new sessions, offers and discount codes from Skillbloom. You can change this at
+                any time. Receipts, reminders and account emails are sent either way.
+              </span>
+            </label>
+          </div>
+        )}
 
         {saveError && <p className="text-sm text-brand-error">{saveError}</p>}
         {saved && <p className="text-sm text-brand-success">{saved}</p>}
