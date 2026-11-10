@@ -85,12 +85,6 @@ export default function Sessions() {
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE))
   const hasFilters = Boolean(query || section || price)
 
-  const monthLabel = new Intl.DateTimeFormat('en-NG', {
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'Africa/Lagos',
-  }).format(new Date())
-
   function update(changes: Record<string, string | null>) {
     const next = new URLSearchParams(params)
     for (const [k, v] of Object.entries(changes)) {
@@ -119,10 +113,10 @@ export default function Sessions() {
     <section className="container-page py-14 sm:py-20">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="eyebrow">{monthLabel}</p>
-          <h1 className="mt-3 text-4xl sm:text-5xl">Sessions this month</h1>
+          <p className="eyebrow">February, April, June, August, October, December</p>
+          <h1 className="mt-3 text-4xl sm:text-5xl">Upcoming sessions</h1>
           <p className="mt-4 max-w-xl text-lg leading-relaxed text-brand-muted">
-            Each session is a one-month purchase, taught live by the guest named on the listing.
+            Each session is a one-month purchase, taught live every two months by the guest named on the listing.
           </p>
         </div>
         {result && !loading && (

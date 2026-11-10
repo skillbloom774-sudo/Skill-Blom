@@ -35,14 +35,19 @@ const GROUPS: Group[] = [
           'You buy access to one live session for one month. It includes the live meeting, the classwork, assignments and tests from your guest teacher, and the class chat.',
       },
       {
+        question: 'When do sessions run?',
+        answer:
+          'Sessions run every two months: February, April, June, August, October and December. Each session has its own date and time, shown on its page.',
+      },
+      {
         question: 'Is it a subscription?',
         answer:
-          'No. Payment is one-time. It does not renew automatically. To attend the next month, you buy that session again.',
+          'No. Payment is one-time. It does not renew automatically. To attend the next session, you buy that session again.',
       },
       {
         question: 'How long does my access last?',
         answer:
-          'Until the access end date shown on the session page, which is normally the end of the month. You can still open your materials until then.',
+          'Until the access end date shown on the session page, which is normally the end of the session month. You can still open your materials until then.',
       },
       {
         question: 'When can I join the session?',
@@ -65,7 +70,7 @@ const GROUPS: Group[] = [
           'Payments are processed securely by Paystack. You receive a receipt by email once payment is confirmed.',
       },
       {
-        question: 'I paid but my access hasn\'t appeared.',
+        question: "I paid but my access hasn't appeared.",
         answer:
           'Access is confirmed automatically, and it can take a few minutes. Check your dashboard, and check your email for a receipt. If it still hasn\'t appeared after 15 minutes, contact us with your payment email.',
       },
@@ -112,6 +117,11 @@ const GROUPS: Group[] = [
       {
         question: 'Can I change my name or phone number?',
         answer: 'Yes. Open "Your details" from the menu at the top right of the site.',
+      },
+      {
+        question: 'Can I choose whether I receive offers?',
+        answer:
+          'Yes. When you sign up you can tick a box to hear about new sessions, offers and discount codes. You can change this any time under "Your details". Receipts and reminders are sent either way.',
       },
       {
         question: 'How do I delete my account?',
@@ -161,8 +171,8 @@ export default function Faq() {
             <p className="eyebrow">Contact us</p>
             <h2 className="mt-3 text-xl">Still need help?</h2>
             <p className="mt-3 text-sm leading-relaxed text-brand-muted">
-              Email us from the address you signed up with, and include the session name and what you were trying
-              to do. We reply {SUPPORT_REPLY_TIME}.
+              Email us from the address you signed up with, and include the session name and what you were trying to
+              do. We reply {SUPPORT_REPLY_TIME}.
             </p>
             <a
               href={`mailto:${SUPPORT_EMAIL}?subject=Skillbloom%20help`}

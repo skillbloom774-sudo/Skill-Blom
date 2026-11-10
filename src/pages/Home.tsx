@@ -1,133 +1,87 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import SessionCard from '../components/SessionCard'
-import { fetchUpcomingSessions, formatSessionTime, type SessionListItem } from '../lib/sessions'
 
-const STEPS = [
-  {
-    title: 'Pick a session',
-    body: 'Each month has a section and a guest teacher. Choose the one that fits what you want to learn.',
-  },
-  {
-    title: 'Pay for the month',
-    body: 'One payment gives you access to that session, its materials, and its chat until the month ends.',
-  },
-  {
-    title: 'Join live and keep learning',
-    body: 'Join the Zoom session at the time shown, then work through the classwork and tests in your room.',
-  },
+const SCHEDULE = ['February', 'April', 'June', 'August', 'October', 'December']
+
+const FOUNDER_PARAGRAPHS = [
+  'Lydia Abidoh is a creative entrepreneur, graphic designer, technology enthusiast, and the Founder and Chief Executive Officer of Skillbloom, a technology education platform established with a vision to make digital skills education more accessible, practical, and impactful.',
+  'Driven by a passion for creativity, innovation, and personal development, Lydia believes that technology and digital skills are powerful tools for transforming lives, creating opportunities, and building a better future.',
+  'With a background in graphic design and desktop publishing, alongside knowledge of Python programming and a growing interest in technology, she brings together creativity and technology in her approach to leadership and innovation.',
+  'Beyond her creative pursuits, Lydia is passionate about empowerment, entrepreneurship, and helping individuals and businesses grow through knowledge, resource management, and strategic awareness.',
+  'Through Skillbloom, she is committed to creating opportunities for individuals to acquire practical technology skills, discover their potential, and become equipped for an increasingly digital world.',
+  'Her vision is to build Skillbloom into a platform that inspires learning, nurtures creativity, develops digital competence, and empowers people to turn their knowledge into meaningful opportunities.',
+  'She believes that everyone has the potential to become remarkable when given access to the right knowledge, guidance, and opportunities.',
 ]
 
 export default function Home() {
-  const [sessions, setSessions] = useState<SessionListItem[] | null>(null)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    let ignore = false
-
-    fetchUpcomingSessions()
-      .then((rows) => {
-        if (!ignore) setSessions(rows)
-      })
-      .catch((e) => {
-        if (!ignore) setError(e.message)
-      })
-
-    return () => {
-      ignore = true
-    }
-  }, [])
-
-  const next = sessions?.[0] ?? null
-  const nextWhen = next ? formatSessionTime(next.starts_at) : null
-
   return (
     <>
-      <section className="container-page grid items-center gap-14 py-14 sm:py-20 lg:grid-cols-2">
-        <div>
-          <span className="pill">Live sessions, every month</span>
-          <h1 className="mt-6 text-4xl leading-[1.08] sm:text-6xl">
-            Learn design and tech from a working expert, every month.
-          </h1>
-          <p className="mt-6 max-w-lg text-lg leading-relaxed text-brand-muted">
-            Each session is taught live by a guest practitioner. Join on Zoom, ask questions in the
-            chat, and work through the classwork that comes with it.
+      <section className="container-page py-16 sm:py-24">
+        <p className="eyebrow">Live sessions, every two months</p>
+        <h1 className="mt-5 max-w-3xl text-5xl leading-[1.1] sm:text-6xl">
+          Learn design and tech from a working expert.
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-brand-muted">
+          Each session is taught live by a guest practitioner on Zoom or Google Meet. Pay for one session, and get
+          classwork, tests, a class chat and a certificate when you complete the work.
+        </p>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Link to="/sessions" className="btn-primary">Browse sessions</Link>
+          <Link to="/login" className="btn-ghost">Create an account</Link>
+        </div>
+      </section>
+
+      <section className="border-y border-brand-border bg-brand-surface">
+        <div className="container-page py-12">
+          <p className="eyebrow">Session months</p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            {SCHEDULE.map((m) => (
+              <span key={m} className="pill px-4 py-2 text-sm">{m}</span>
+            ))}
+          </div>
+          <p className="mt-5 max-w-2xl text-sm leading-relaxed text-brand-muted">
+            Sessions run every two months. Each one gives you access for its full month, so there is always time to
+            complete the work.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Link to="/sessions" className="btn-primary">Browse this month</Link>
-            <Link to="/login" className="btn-ghost">Create an account</Link>
-          </div>
-        </div>
-
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-brand-accent p-8 sm:p-12">
-          <img src="/logo.svg" alt="" aria-hidden className="absolute -right-12 -top-12 h-56 w-56 opacity-15" />
-          <div className="card relative mx-auto max-w-sm p-6 sm:p-7">
-            {next && nextWhen ? (
-              <>
-                <p className="eyebrow">Next session</p>
-                <h2 className="mt-4 text-2xl leading-snug">{next.title}</h2>
-                <p className="mt-3 text-sm text-brand-muted">
-                  {nextWhen.day}, {nextWhen.time}
-                  {next.guest_teachers && <> · with {next.guest_teachers.name}</>}
-                </p>
-                <Link to={`/sessions/${next.id}`} className="btn-primary mt-7 w-full">
-                  View session
-                </Link>
-              </>
-            ) : (
-              <>
-                <p className="eyebrow">Next session</p>
-                <p className="mt-4 text-brand-muted">
-                  The next session will appear here once it's published.
-                </p>
-              </>
-            )}
-          </div>
         </div>
       </section>
 
-      <section className="container-page pb-20">
-        <div className="flex items-end justify-between gap-4">
+      <section className="container-page py-16 sm:py-24">
+        <div className="grid gap-12 lg:grid-cols-[360px_1fr] lg:gap-16">
           <div>
-            <p className="eyebrow">This month</p>
-            <h2 className="mt-3 text-3xl">Upcoming sessions</h2>
+            <img
+              src="/founder.jpg"
+              alt="Lydia Abidoh, Founder and Chief Executive Officer of Skillbloom"
+              className="aspect-[3/4] w-full rounded-2xl object-cover"
+            />
           </div>
-          <Link to="/sessions" className="text-sm text-brand-muted transition hover:text-brand-primary">
-            View all
-          </Link>
-        </div>
 
-        {error && <p className="mt-10 text-sm text-brand-error">Sessions could not be loaded. Please refresh.</p>}
-        {sessions === null && !error && <p className="mt-10 text-brand-muted">Loading sessions</p>}
-        {sessions !== null && sessions.length === 0 && (
-          <div className="card mt-10 text-brand-muted">
-            No sessions are scheduled yet. New sessions appear here once they're published.
+          <div>
+            <p className="eyebrow">About the founder</p>
+            <h2 className="mt-4 text-4xl">Lydia Abidoh</h2>
+            <p className="mt-3 text-lg text-brand-primary">
+              Founder &amp; Chief Executive Officer of Skillbloom
+            </p>
+
+            <div className="mt-8 grid gap-5 text-base leading-relaxed text-brand-text">
+              {FOUNDER_PARAGRAPHS.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
           </div>
-        )}
-        {sessions !== null && sessions.length > 0 && (
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {sessions.slice(0, 6).map((s) => (
-              <SessionCard key={s.id} session={s} />
-            ))}
-          </div>
-        )}
+        </div>
       </section>
 
-      <section className="border-t border-brand-border bg-brand-surface">
-        <div className="container-page py-20">
-          <p className="eyebrow">How it works</p>
-          <h2 className="mt-3 text-3xl">Three steps to your first session</h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {STEPS.map((step, i) => (
-              <div key={step.title} className="card shadow-none">
-                <span className="font-serif text-4xl text-brand-accent">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <h3 className="mt-5 text-xl">{step.title}</h3>
-                <p className="mt-3 leading-relaxed text-brand-muted">{step.body}</p>
-              </div>
-            ))}
+      <section className="border-t border-brand-border bg-brand-primary">
+        <div className="container-page flex flex-col gap-6 py-16 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-3xl text-white">Ready to start learning?</h2>
+            <p className="mt-3 max-w-xl text-white/75">
+              Browse the upcoming sessions, or create an account to get started.
+            </p>
           </div>
+          <Link to="/sessions" className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-[15px] font-medium text-brand-primary transition hover:bg-white/90">
+            View sessions
+          </Link>
         </div>
       </section>
     </>
